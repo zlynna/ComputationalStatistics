@@ -1,7 +1,7 @@
 data:
-  datapath: '../data/NS-T4000.npy'
-  Re: 500
-  total_num: 4000
+  datapath: '../../gdrive/MyDrive/PINO_data/KFvorticity_Re40_N200_T500.npy'
+  Re: 40
+  total_num: 200
   offset: 0
   n_sample: 200
   time_interval: 1

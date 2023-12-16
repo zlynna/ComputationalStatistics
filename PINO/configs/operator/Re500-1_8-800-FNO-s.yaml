@@ -1,17 +1,17 @@
 data:
   name: KF
-  paths: ['/raid/hongkai/NS-Re500_T300_id0-shuffle.npy']
-  Re: 500
+  paths: ['../../gdrive/MyDrive/PINO_data/KFvorticity_Re40_N200_T500.npy']
+  Re: 40
   offset: 0
-  total_num: 300
+  total_num: 180
   raw_res: [256, 256, 513]
   n_data_samples: 100
   data_res: [64, 64, 257]  # resolution in 1 second
   pde_res: [64, 64, 129]   # resolution in 1 second
   a_offset: 0
   n_a_samples: 250
-  testoffset: 275
-  n_test_samples: 25
+  testoffset: 180
+  n_test_samples: 20
   t_duration: 0.125
   shuffle: True
 
