@@ -74,18 +74,18 @@ def train_2d_operator(model,
             if data_weight > 0:
                 pred = model(data_ic).squeeze(dim=-1)
                 pred = pred * mollifier
-                data_loss = myloss(pred, y)
+                data_loss = myloss(pred, u)
 
-            a = x[..., 0]
+            a = pde_ic[..., 0]
             f_loss = darcy_loss(pred, a)
 
             loss = data_weight * data_loss + f_weight * f_loss
             loss.backward()
             optimizer.step()
 
-            loss_dict['train_loss'] += loss.item() * y.shape[0]
-            loss_dict['f_loss'] += f_loss.item() * y.shape[0]
-            loss_dict['data_loss'] += data_loss.item() * y.shape[0]
+            loss_dict['train_loss'] += loss.item() * u.shape[0]
+            loss_dict['f_loss'] += f_loss.item() * u.shape[0]
+            loss_dict['data_loss'] += data_loss.item() * u.shape[0]
 
         scheduler.step()
         train_loss_val = loss_dict['train_loss'] / len(train_loader.dataset)
@@ -147,43 +147,23 @@ def train_2d_burger(model,
         train_pino = 0.0
         data_l2 = 0.0
         train_loss = 0.0
-        
-        for i, (x, y) in enumerate(train_loader):
+
+        for x, y in train_loader:
             x, y = x.to(rank), y.to(rank)
             out = model(x).reshape(y.shape)
             data_loss = myloss(out, y)
 
             loss_u, loss_f = PINO_loss(out, x[:, 0, :, 0], v)
-            total_loss = loss_f * f_weight + loss_u * ic_weight + data_loss * data_weight
-            # + loss_u * ic_weight + data_loss * data_weight
+            total_loss = loss_u * ic_weight + loss_f * f_weight + data_loss * data_weight
+
             optimizer.zero_grad()
             total_loss.backward()
             optimizer.step()
-            print(optimizer.param_groups[0]['lr'])
-            # for i, param in enumerate(model.parameters()):
-            #     print(i, '\n')
-            #     grad = param.grad
-            #     if grad is None:
-            #         pass
-            #     else:
-            #         g = grad.cpu().detach().numpy().mean().item()
-            #         print(g)
-            # if i % 10==0:
-            #     exit()
 
             data_l2 += data_loss.item()
             train_pino += loss_f.item()
             train_loss += total_loss.item()
-            if i%10==0:
-                print(i,'\n')
-                print(total_loss.item())
-                print(loss_u.item())
-                print(loss_f.item())
-                # print(scheduler.get_lr())
-        print(e,'\n')
-        print(total_loss)
-        exit()
-        # scheduler.step()
+        scheduler.step()
         data_l2 /= len(train_loader)
         train_pino /= len(train_loader)
         train_loss /= len(train_loader)
