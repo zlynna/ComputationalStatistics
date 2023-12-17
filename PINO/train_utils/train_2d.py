@@ -76,7 +76,7 @@ def train_2d_operator(model,
                 pred = pred * mollifier
                 data_loss = myloss(pred, u)
 
-            a = pde_ic[..., 0]
+            a = data_ic[..., 0]
             f_loss = darcy_loss(pred, a)
 
             loss = data_weight * data_loss + f_weight * f_loss
