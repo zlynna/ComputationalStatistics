@@ -25,7 +25,7 @@ def run(args, config):
                   layers=config['model']['layers'],
                   act=config['model']['act']).to(device)
     # torch.save(model.state_dict(), 'init_param\init.pth')
-    model.load_state_dict(torch.load('init_param\init_burgers.pth'))
+    # model.load_state_dict(torch.load('init_param\init_burgers.pth'))
     # Load from checkpoint
     if 'ckpt' in config['train']:
         ckpt_path = config['train']['ckpt']
